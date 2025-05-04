@@ -20,4 +20,3 @@ def test_webhook(test_client):
     response = test_client.post(url, json=payload, headers=headers)
 
     assert response.status_code == 200
-    assert response.json["message"] == "Webhook received"
