@@ -5,8 +5,12 @@
             "name": "Python Debugger: Current File",
             "type": "debugpy",
             "request": "launch",
-            "program": "${file}",
-            "console": "integratedTerminal"
+            "module": "pytest",
+            "args": [
+                "${file}"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
         },
         {
             "name": "Python: Debug Gunicorn",
@@ -20,7 +24,7 @@
             "console": "integratedTerminal"
         },
         {
-            "name": "Debug Specific Pytest",
+            "name": "test_webhook",
             "type": "debugpy",
             "request": "launch",
             "module": "pytest",
