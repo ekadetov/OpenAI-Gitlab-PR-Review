@@ -13,8 +13,8 @@ def test_webhook(test_client):
     headers = {"Content-Type": "application/json", "X-Gitlab-Token": "123"}
     payload = {
         "object_kind": "merge_request",
-        "object_attributes": {"action": "open", "iid": 1},
-        "project": {"id": 123},
+        "object_attributes": {"action": "open", "iid": 6091},
+        "project": {"id": 18752679},
     }
 
     response = test_client.post(url, json=payload, headers=headers)

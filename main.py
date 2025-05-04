@@ -2,20 +2,22 @@ import os
 import json
 import requests
 from flask import Flask, request
-from openai import OpenAI
+import openai
 
 app = Flask(__name__)
 gitlab_token = os.environ.get("GITLAB_TOKEN")
 gitlab_url = os.environ.get("GITLAB_URL")
 
-# Initialize the Gemini client
-client = OpenAI(
-    api_key=os.environ.get("GEMINI_API_KEY"),
-    base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
-)
+openai.api_key = os.environ.get("LLM_API_KEY")
+api_base = os.environ.get("LLM_API_BASE")
+if api_base != None:
+    openai.api_base = api_base
 
 # Update the default model to GEMINI model
-default_model = os.environ.get("GEMINI_API_MODEL") or "gemini-2.0-flash"
+default_model = os.environ.get("LLM_MODEL") or "gemini-2.0-flash"
+
+# Convert LLM_TEMPERATURE to a float with a default value of 0.7 if not set
+llm_temperature = float(os.environ.get("LLM_TEMPERATURE", 0.7))
 
 
 @app.route("/webhook", methods=["POST"])
@@ -25,7 +27,7 @@ def webhook():
     payload = request.json
     if payload.get("object_kind") == "merge_request":
         if payload["object_attributes"]["action"] != "open":
-            return "Not a  PR open", 200
+            return "Not a PR open", 200
         project_id = payload["project"]["id"]
         mr_id = payload["object_attributes"]["iid"]
         changes_url = (
@@ -64,10 +66,9 @@ def webhook():
         ]
 
         try:
-            completions = client.ChatCompletion.create(
-                deployment_id=default_model,
+            completions = openai.ChatCompletion.create(
                 model=default_model,
-                temperature=0.2,
+                temperature=llm_temperature,
                 stream=False,
                 messages=messages,
             )
@@ -128,10 +129,9 @@ def webhook():
 
         print(messages)
         try:
-            completions = client.ChatCompletion.create(
-                deployment_id=default_model,
+            completions = openai.ChatCompletion.create(
                 model=default_model,
-                temperature=0.7,
+                temperature=llm_temperature,
                 stream=False,
                 messages=messages,
             )
