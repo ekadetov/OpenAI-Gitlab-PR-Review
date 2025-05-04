@@ -15,6 +15,20 @@
                 "isDefault": true
             },
             "problemMatcher": []
+        },
+        {
+            "label": "Run Pytest",
+            "type": "shell",
+            "command": "pytest",
+            "args": [
+                "--maxfail=5",
+                "--disable-warnings"
+            ],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "problemMatcher": []
         }
     ]
 }
